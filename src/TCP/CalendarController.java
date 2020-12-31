@@ -1,5 +1,8 @@
 package TCP;
 import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,11 +17,11 @@ public class CalendarController {
 	
 	String jdbcDriver = "com.mysql.cj.jdbc.Driver";
 	//String jdbcServer = "com.microsoft.sqlerver.jdbc.SQLServerDriver";
-	String jdbcUrl = "jdbc:mysql://bibd.cw1fnax2ura3.ap-northeast-2.rds.amazonaws.com?&serverTimezone=Asia/Seoul&useSSL=false";
+	String jdbcUrl = "jdbc:mysql://bibd.cw1fnax2ura3.ap-northeast-2.rds.amazonaws.com/couple_bus?&serverTimezone=Asia/Seoul&useSSL=false";
 	Connection conn;
 	String id="sodam";
 	String pw="12341234";
-	Calendar today;
+
 	Calendar cal;
 	
 	Statement stmt;
@@ -33,18 +36,75 @@ public class CalendarController {
 		
 		
 		cal = new GregorianCalendar();
-		
+		conDB();
 		gridInit();
 		showTable();
+		hidebtn();
+		
+		v.addButtonActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Object obj = e.getSource();
+				if(obj==v.btnBefore) {
+					v.centerPanel.removeAll();
+					calInput(-1);
+					gridInit();
+					GridLayout gridLayout1 = new GridLayout(7,7);
+					v.centerPanel.setLayout(gridLayout1);
+					showTable();
+					hidebtn();
+					v.lblYear.setText(v.year+" 년 ");
+					v.lblMonth.setText(v.month+" 월 ");
+					
+				}
+				else if(obj==v.btnAfter) {
+					v.centerPanel.removeAll();
+					calInput(1);
+					gridInit();
+					GridLayout gridLayout1 = new GridLayout(7,7);
+					v.centerPanel.setLayout(gridLayout1);
+					showTable();
+					hidebtn();
+					v.lblYear.setText(v.year+" 년 ");
+					v.lblMonth.setText(v.month+" 월 ");
+				}
+				
+				else if(obj==v.btnBefore2) {
+					v.centerPanel.removeAll();
+					calInput(-2);
+					gridInit();
+					GridLayout gridLayout1 = new GridLayout(7,7);
+					v.centerPanel.setLayout(gridLayout1);
+					showTable();
+					hidebtn();
+					v.lblYear.setText(v.year+" 년 ");
+					v.lblMonth.setText(v.month+" 월 ");
+				}
+				else if(obj==v.btnAfter2) {
+					v.centerPanel.removeAll();
+					calInput(2);
+					gridInit();
+					GridLayout gridLayout1 = new GridLayout(7,7);
+					v.centerPanel.setLayout(gridLayout1);
+					showTable();
+					hidebtn();
+					v.lblYear.setText(v.year+" 년 ");
+					v.lblMonth.setText(v.month+" 월 ");
+				}
+				
+			}
+		});
 	}
 	
 	public void gridInit() {
 		for(int i =0;i<v.days.length;i++) {
     		v.centerPanel.add(v.calBtn[i] = new JButton(v.days[i]));
+    		v.calBtn[i].setBackground(Color.white);
     	}
     	for(int i = v.days.length;i<49;i++) {
     		v.centerPanel.add(v.calBtn[i]= new JButton(""));
-    		//v.calBtn.addActionListener(this);
+    		//v.calBtn.addActionListener();
     	}
 	}
 	
@@ -75,7 +135,7 @@ public class CalendarController {
 	    		if(cal.get(Calendar.MONTH)!=v.month-1) {
 	    			break;
 	    		}
-	    		conDB();
+	    		v.calBtn[i+hopping+6].setBackground(Color.white);
 	    		v.todays = i;
 	    		checkday();
 	    		if(v.memoday==1) {
@@ -104,11 +164,19 @@ public class CalendarController {
 		 try {
 			 rs=stmt.executeQuery(sql);
 			 if(rs.next()) {
-				 v.memoday =1 ;
+				 
+				 v.memoday =1;
 			 }
 			 else v.memoday = 0;
 		 }catch(Exception e) {
 			 e.printStackTrace();
+		 }
+	 }
+	 
+	 public void hidebtn() {
+		 for(int i=0;i<v.calBtn.length;i++) {
+			 if((v.calBtn[i].getText()).equals(""))
+				 v.calBtn[i].setEnabled(false);
 		 }
 	 }
 	 
@@ -121,6 +189,26 @@ public class CalendarController {
 		 stmt = conn.createStatement();
 		 }catch(Exception e) { e.printStackTrace(); }
 	 }
+	 public void calInput(int data) {
+		 if(data ==-1||data ==1) {
+			 v.month +=(data);
+			 if(v.month<=0) {
+				 v.month = 12;
+				 v.year--;
+			 }
+			 else if(v.month>12) {
+				 v.month =1;
+				 v.year++;
+			 }
+		 }
+		 else if(data == 2) {v.year ++;}
+		 else if(data ==-2 ) {v.year--;}
+			 
+	 }
+	 
+	 
+	 
+	 
 	 
 	 public static void main(String arg[]) {
 	    	new CalendarController(new CalendarView());

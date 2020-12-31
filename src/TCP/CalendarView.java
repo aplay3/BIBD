@@ -31,6 +31,7 @@ public class CalendarView extends JFrame {
     
     JTextField txtWrite;
     JLabel lblYear,lblMonth,lblTitle;
+    JTextArea ta;
     BorderLayout bLayout= new BorderLayout(); 
     
     Connection con = null;
@@ -55,8 +56,8 @@ public class CalendarView extends JFrame {
     	btnAfter = new JButton(">");
     	btnAfter2 = new JButton(">>");
     	
-    	lblYear = new JLabel(year+"년");
-    	lblMonth = new JLabel(month+"월");
+    	lblYear = new JLabel(year+" 년 ");
+    	lblMonth = new JLabel(month+" 월 ");
     	
     	Font f = new Font("휴먼편지체",Font.BOLD,25);
     	calBtn = new JButton[49];
@@ -74,20 +75,38 @@ public class CalendarView extends JFrame {
     	northPanel.add(lblMonth);
     	northPanel.add(btnAfter);
     	northPanel.add(btnAfter2);
-    	
-    	add(titlePanel,BorderLayout.NORTH);
-    	add(northPanel,BorderLayout.CENTER);
-    	
     	centerPanel = new JPanel( new GridLayout(7,7));
     	f = new Font("휸먼편지체",Font.BOLD,12);
     	
-    	add(centerPanel,BorderLayout.SOUTH);
+    	
+    	add(titlePanel,BorderLayout.NORTH);
+    	northPanel.add(centerPanel);
+    	
+    	btnAdd = new JButton("일정추가");
+    	btnDel = new JButton("일정삭제");
+    	
+    	add(northPanel,BorderLayout.CENTER);
+    	
+    	southPanel= new JPanel();
+    	ta = new JTextArea(15,40);
+    	
+    	southPanel.add(ta);
+    	add(southPanel,BorderLayout.SOUTH);
+    	
+    	
     	
     	setSize(600,700);
     	setVisible(true); 
     }
     
-   
+    public void addButtonActionListener(ActionListener listener) {
+		btnBefore2.addActionListener(listener);
+		btnBefore.addActionListener(listener);
+		btnAfter.addActionListener(listener);
+		btnAfter2.addActionListener(listener);
+		for(int i=0;i<49;i++)
+			calBtn[i].addActionListener(listener);
+	}
     
     
    
